@@ -1,7 +1,3 @@
-// จัดทำโดย 62-010126-2026-1 อรภิญญา โภคหัตถโกศล
-// เสนอ อาจารย์ดนุชา ประเสริฐสม
-// รายงานการอ่านค่า LM73 บนบอร์ด KidBright
-
 // Wire library for I2C Communication 
 #include <Wire.h>
 // select temp sensor (LM73) in KidBright32
