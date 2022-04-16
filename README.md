@@ -6,5 +6,5 @@
 * Arduino IDE
 
 ## Setting Arduino IDE for ESP32
-1 Opening the Arduino IDE
-2 Insert board manager
+1. Opening the Arduino IDE
+2. Adding board manager in ```File >> Preferences```
