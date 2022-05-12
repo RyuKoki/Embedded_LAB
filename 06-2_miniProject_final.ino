@@ -1,8 +1,13 @@
 #include <Wire.h>
 #include <WiFi.h>
 #include <TridentTD_LineNotify.h>
+#include <ThingSpeak.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_LEDBackpack.h>
+// client for thing speak
+WiFiClient client;
+unsigned long CH_NUMBER  = xxxxx;
+const char*   CH_APIkey  = "xxx";
 // GPIO Switch 1 and 2
 #define SW1       (16)
 #define SW2       (14)
@@ -72,6 +77,8 @@ int READ_TEMP() {
 void setup() {
   // connect to WiFi
   CONNECT_WIFI();
+  // connect to ThingSpeak
+  ThingSpeak.begin(client);
   // Temperature (LM73) I2C
   Wire1.begin( TEMP_SDA, TEMP_SCL );
   // switch 1 and 2 pin mode
@@ -91,6 +98,9 @@ void setup() {
 }
 
 void loop() {
+  // counter for counting in 60 seconds
+  static int cnt = 1;
+  Serial.println(cnt);
   // read temperatures
   int temp = READ_TEMP();
   // show temperatures on dot matrix
@@ -119,29 +129,58 @@ void loop() {
       Serial.println("close");
     }
   }
-  // send message to LINE NOTIFY if temperatures are more than 37 celsius
-  while ( temp > 34 ) {
-    // read cool_temp for condition in cooler
-    int cool_temp = READ_TEMP();
-    // show temperatures on dot matrix
-    matrix.clear();
-    matrix.setCursor(2, 0);
-    matrix.print(cool_temp);
-    matrix.writeDisplay();
-    // open cooler if temp >= 37 degree
-    if ( cool_temp >= 37 ) { 
-      digitalWrite( SW_USB, LOW );
-      // LINE_NOTIFY("\nTemperature >> " + String(temp) + " Celsius\nCooler's working...");
+  if ( temp > 34 ) {
+    // send message to LINE NOTIFY if temperatures are more than 37 celsius
+    while ( 1 ) {
+      Serial.println(cnt);
+      // read cool_temp for condition in cooler
+      int cool_temp = READ_TEMP();
+      // show temperatures on dot matrix
+      matrix.clear();
+      matrix.setCursor(2, 0);
+      matrix.print(cool_temp);
+      matrix.writeDisplay();
+      // open cooler if temp >= 37 degree
+      if ( cool_temp == 37 ) { 
+        digitalWrite( SW_USB, LOW );
+        LINE_NOTIFY("\nTemperature >> " + String(cool_temp) + " Celsius\nCooler's working...");
+      }
+      // close cooler if temp == 35 degree
+      if ( cool_temp == 34 ) { 
+        digitalWrite( SW_USB, HIGH );
+        break;
+      }
+      if ( cnt == 60 ) {
+        int log_temp = READ_TEMP();
+        ThingSpeak.setField( 1, log_temp );
+        // writing values to ThingSpeak
+        int STATUS_SENDING = ThingSpeak.writeFields(CH_NUMBER, CH_APIkey);
+        if ( STATUS_SENDING == 200 ) {
+          Serial.println("++++++++++ SUCCESSFUL ++++++++++");
+        } else {
+          Serial.println("---------- ERROR " + String(STATUS_SENDING) + "----------");
+        }
+        cnt = 0;
+      }
+      cnt++;
+      // Serial.println("35 loop");
+      delay(1000);
     }
-    // close cooler if temp == 35 degree
-    if ( cool_temp == 35 ) { 
-      digitalWrite( SW_USB, HIGH );
-      // LINE_NOTIFY("\nTurning off cooler...\nTemperature >> " + String(temp) + " Celsius");
-      break;
-    }
-    Serial.println("35 loop");
-    delay(1000);
   }
-  Serial.println("Main loop");
+  // Serial.println("Main loop");
+  // complete 60 seconds send temperature to ThingSpeak
+  if ( cnt == 60 ) {
+    int log_temp = READ_TEMP();
+    ThingSpeak.setField( 1, log_temp );
+    // writing values to ThingSpeak
+    int STATUS_SENDING = ThingSpeak.writeFields(CH_NUMBER, CH_APIkey);
+    if ( STATUS_SENDING == 200 ) {
+      Serial.println("++++++++++ SUCCESSFUL ++++++++++");
+    } else {
+      Serial.println("---------- ERROR " + String(STATUS_SENDING) + "----------");
+    }
+    cnt = 0;
+  }
+  cnt++;
   delay(1000);
 }
