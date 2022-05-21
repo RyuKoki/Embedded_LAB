@@ -130,6 +130,8 @@ void loop() {
     }
   }
   if ( temp > 34 ) {
+    // LINE notify's state
+    uint8_t send_noti = 0;
     // send message to LINE NOTIFY if temperatures are more than 37 celsius
     while ( 1 ) {
       Serial.println(cnt);
@@ -141,9 +143,10 @@ void loop() {
       matrix.print(cool_temp);
       matrix.writeDisplay();
       // open cooler if temp >= 37 degree
-      if ( cool_temp == 37 ) { 
+      if ( cool_temp==37 and send_noti==0 ) { 
         digitalWrite( SW_USB, LOW );
         LINE_NOTIFY("\nTemperature >> " + String(cool_temp) + " Celsius\nCooler's working...");
+        send_noti = 1;
       }
       // close cooler if temp == 35 degree
       if ( cool_temp == 34 ) { 
