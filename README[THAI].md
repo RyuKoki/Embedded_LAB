@@ -26,7 +26,7 @@
   1. เข้าไปที่เมนู ```Sketch >> Include Library >> Manage Libraries...```
   ![image](https://user-images.githubusercontent.com/68011889/177041686-baa201ed-d44d-465f-aff8-3fffe35ec0af.png)
   2. พิมพ์ค้นหาคำว่า ```TridentTD_Linenotify``` แล้วกด ```install```
-  ![image](https://user-images.githubusercontent.com/68011889/177041808-7a00d5c2-9f15-43da-8127-6e4535e81527.png)
+  ![image](https://user-images.githubusercontent.com/68011889/177041959-a63197d0-6efa-4d18-9c62-dc98700ba715.png)
   3. จากนั้นทำการ ปิด และ เปิดโปรแกรม Arduino IDE ขึ้นมาใหม่
 
 ## ข้อสังเกตต่างๆ
