@@ -34,4 +34,5 @@
 ![image](https://user-images.githubusercontent.com/68011889/177041214-89b49caa-38d9-479f-96ad-4021c4a391a7.png)
 * เวลาที่ทำการ Upload Code แล้ว ต้องการเรียกใช้ Serial Monitor แต่ใน ```void setup()``` มีคำสั่ง ```Serial.begin(115200);```
   * เมื่อเปิด Serial Monitor ที่เมนูรูปแว่นขยายทางด้านบนขวามือแล้ว จะมีเมนู drop down ให้เลือกทางด้านล่างขวามือของ Serial Monitor ให้ตั้งค่าโดยการเลือกเป็น 115200 แทน
+* การเชื่อมต่อ WiFi นั้น ที่ WiFi จะต้องเป็นความถี่ 2.4GHz เท่านั้น
 
